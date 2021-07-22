@@ -1,10 +1,11 @@
-import './App.css';
+import './App.scss';
+import Presentation from './components/Presentation';
 
 function App() {
-  
+
   return (
     <>
-
+      <Presentation />
     </>
   );
 }
