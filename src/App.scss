@@ -6,20 +6,8 @@
     justify-content: center;
     align-items: center;
     background-color: #22455e;
-    color: #F1F2F4;
+    color: #fff;
 }
-
-// #title {
-//     width: 25%;
-//     height: 10%;
-//     background-color: black;
-// }
-
-// #length {
-//     width: 40%;
-//     height: 15%;
-//     background-color: black;
-// }
 
 #length-wrapper {
     width: 20%;
@@ -64,8 +52,12 @@
     }
 }
 
-.icons {
-    cursor: pointer
+button {
+    cursor: pointer;
+    border: none;
+    color: white;
+    background-color: #22455e;
+    font-size: 20px;
 }
 
 #repeat {

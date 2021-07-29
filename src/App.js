@@ -1,11 +1,11 @@
 import './App.scss';
-import Presentation from './components/Presentation';
+import Clock from './components/Clock';
 
 function App() {
 
   return (
     <>
-      <Presentation />
+      <Clock />
     </>
   );
 }
