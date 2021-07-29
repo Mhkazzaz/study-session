@@ -24,21 +24,21 @@ export const sessionCounterSlice = createSlice({
 
 export const incSessionThunk = () => (dispatch, getState) => {
     const { timer } = getState()
-    if (!timer.isPlay) {
+    if (!timer.isPlaying) {
         dispatch(incSession())
     }
 }
 
 export const decSessionThunk = () => (dispatch, getState) => {
     const { timer } = getState()
-    if (!timer.isPlay) {
+    if (!timer.isPlaying) {
         dispatch(decSession())
     }
 }
 
 export const resetSessionThunk = () => (dispatch, getState) => {
     const { timer } = getState()
-    if (!timer.isPlay) {
+    if (!timer.isPlaying) {
         dispatch(resetSession())
     }
 }

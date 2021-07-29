@@ -24,21 +24,21 @@ export const breakCounterSlice = createSlice({
 
 export const incBreakThunk = () => (dispatch, getState) => {
     const { timer } = getState()
-    if (!timer.isPlay) {
+    if (!timer.isPlaying) {
         dispatch(incBreak())
     }
 }
 
 export const decBreakThunk = () => (dispatch, getState) => {
     const { timer } = getState()
-    if (!timer.isPlay) {
+    if (!timer.isPlaying) {
         dispatch(decBreak())
     }
 }
 
 export const resetBreakThunk = () => (dispatch, getState) => {
     const { timer } = getState()
-    if (!timer.isPlay) {
+    if (!timer.isPlaying) {
         dispatch(resetBreak())
     }
 }

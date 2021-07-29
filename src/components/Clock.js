@@ -2,18 +2,20 @@ import { FaArrowUp, FaArrowDown, FaPause, FaPlay, FaRedo } from 'react-icons/fa'
 import { useSelector, useDispatch } from 'react-redux';
 import { incSessionThunk, decSessionThunk, resetSessionThunk, sessionCounterSelector } from '../redux/sessionCounterSlice';
 import { incBreakThunk, decBreakThunk, resetBreakThunk, breakCounterSelector } from '../redux/breakCounterSlice';
+
+
 import { 
          setSessionTimerThunk,
          setBreakTimerThunk,
          resetSessionTimerThunk,
          timerThunk,
-         play,
          sessionTimerSelector,
          breakTimerSelector,
          isRedSelector,
          isBreakSelector,
          isBreakTitleSelector,
         } from '../redux/timerSlice';
+
 
 const Clock = ()  => {
 
@@ -26,6 +28,7 @@ const Clock = ()  => {
     const isBreakTitle = useSelector(isBreakTitleSelector)
 
     const dispatch = useDispatch();
+
 
     return (
         <>
@@ -54,7 +57,7 @@ const Clock = ()  => {
                     <span id="countdown" style={isRed ? { color: "red" } : { color: "white" }}>{isBreak? breakTimer : sessionTimer}</span>
                 </div>
                 <div id="icons">
-                    <button id="play-btn" onClick={() => { dispatch(timerThunk()); dispatch(play()) }}>
+                    <button id="play-btn" onClick={() => { dispatch(timerThunk()); }}>
                     <FaPlay  className="icons"/>
                     <FaPause className="icons"/>
                     </button>

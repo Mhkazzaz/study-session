@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { Howl } from 'howler';
+import openhat from '../audio/openhat.wav'
 
 export const timerSlice = createSlice({
     name: "timer",
@@ -8,8 +10,9 @@ export const timerSlice = createSlice({
         breakVal: "05:00",
         isRed: false,
         isBreak: false,
-        isPlay: false,
+        isPlaying: false,
         isBreakTitle: false,
+        interval: null
     },
 
     reducers: {
@@ -27,8 +30,6 @@ export const timerSlice = createSlice({
         },
 
         countdown: (state, action) => {
-
-            // console.log(`COUNTDOWN SESSION VALUE: ${state.sessionVal}`)
 
             let mins = (action.payload.split("").slice(0, action.payload.indexOf(":")).join(''))
             let secs = (action.payload.split("").slice(action.payload.indexOf(":") + 1).join(''))
@@ -61,12 +62,20 @@ export const timerSlice = createSlice({
             }
         },
 
+        playSound: () => {
+            let sound = new Howl({
+                src: [openhat]
+            });            
+            sound.play();
+        },
+
         switchCountdown: (state, action) => {
 
             state.isBreak = !state.isBreak
             state.isRed = !state.isRed
             state.isBreakTitle = !state.isBreakTitle
-            
+            state.switched = !state.switched
+
             if (!state.isBreak) {
                 if (String(action.payload).length === 1) {
                     state.sessionVal = `0${action.payload}:00`
@@ -79,54 +88,62 @@ export const timerSlice = createSlice({
                 } else {
                     state.breakVal = `${action.payload}:00`
                 }
-                // console.log(`FETCHED: ${action.payload}`)
             }
         },
 
-        play: state => {
-            state.isPlay = !state.isPlay
+        playTrue: state => {
+            state.isPlaying = true
+        },
+
+        playFalse: state => {
+            state.isPlaying = false
+        },
+
+        int: (state, action) => {
+            state.interval = action.payload
         }
     }
 
 })
 
 export const timerThunk = () => (dispatch, getState) => {
-    
-    const countdownThunk = () => {
-        const { timer } = getState()
-        const { sessionCounter } = getState()
-        const { breakCounter } = getState()
 
-        if (!timer.isPlay) {
-            clearInterval(interval)
-        } else {
+    const { timer } = getState()
+    let interval; 
+
+    if (!timer.isPlaying) {
+        interval = setInterval(() => {
+            const { timer, sessionCounter, breakCounter } = getState()
             if (!timer.isBreak) {
-                // Session Countdown
                 if (timer.sessionVal === `00:00`) {
+                    dispatch(playSound()) 
                     dispatch(switchCountdown(breakCounter.value))
                 } else {
                     dispatch(countdown(timer.sessionVal))
                 }
             } else {
-                // Break Countdown
                 if (timer.breakVal === `00:00`) {
-                    dispatch(switchCountdown(sessionCounter.value))
+                    dispatch(playSound())
+                    dispatch(switchCountdown(sessionCounter.value))            
                 } else {
                     dispatch(countdown(timer.breakVal))
                 }
             }
-        }
-    };
+        }, 1000)
 
-    const interval = setInterval(countdownThunk, 1000)
+        dispatch(playTrue())
+        dispatch(int(interval))
+
+    }  else {
+        const { timer } = getState()
+        clearInterval(timer.interval)
+        dispatch(playFalse())
+    }
 }
 
-
-
 export const setSessionTimerThunk = () => (dispatch, getState) => {
-    const { timer } = getState();
-    const { sessionCounter } = getState()
-    if (!timer.isPlay) {
+    const { timer, sessionCounter } = getState();
+    if (!timer.isPlaying) {
         if (sessionCounter.value < 10) {
             let sessionValue = `0${sessionCounter.value}:00`
             dispatch(setSessionTimer(sessionValue))
@@ -138,9 +155,8 @@ export const setSessionTimerThunk = () => (dispatch, getState) => {
 }
 
 export const setBreakTimerThunk = () => (dispatch, getState) => {
-    const { timer } = getState();
-    const { breakCounter } = getState()
-    if (!timer.isPlay) {
+    const { timer, breakCounter } = getState();
+    if (!timer.isPlaying) {
         if (breakCounter.value < 10) {
             let breakValue = `0${breakCounter.value}:00`
             dispatch(setBreakTimer(breakValue))
@@ -153,7 +169,7 @@ export const setBreakTimerThunk = () => (dispatch, getState) => {
 
 export const resetSessionTimerThunk = () => (dispatch, getState) => {
     const { timer } = getState();
-    if (!timer.isPlay) {
+    if (!timer.isPlaying) {
         dispatch(resetSessionTimer())
     }
 }
@@ -163,6 +179,7 @@ export const breakTimerSelector = state => state.timer.breakVal
 export const isRedSelector = state => state.timer.isRed
 export const isBreakSelector = state => state.timer.isBreak
 export const isBreakTitleSelector = state => state.timer.isBreakTitle
+export const switchedSelector = state => state.timer.switched
 
-export const { setSessionTimer, resetSessionTimer, setBreakTimer, countdown, switchCountdown, play } = timerSlice.actions
+export const { setSessionTimer, resetSessionTimer, setBreakTimer, countdown, switchCountdown, playTrue, playFalse, int, playSound } = timerSlice.actions
 export default timerSlice.reducer
